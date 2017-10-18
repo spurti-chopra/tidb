@@ -1,8 +1,11 @@
 language: go
+os: power
+dist: xenial
 
 go_import_path: github.com/pingcap/tidb
 
 go:
+  - 1.8
   - 1.9
 
 # https://docs.travis-ci.com/user/customizing-the-build/#Rows-that-are-Allowed-to-Fail
@@ -17,11 +20,12 @@ matrix:
     - go: 1.8
       env: TRAVIS_COVERAGE=1
 
-before_install:  
+before_install:
   # create /logs/unit-test for unit test.
   - sudo mkdir /logs
   - sudo touch /logs/unit-test
   # See https://github.com/golang/go/issues/12933
   - bash gitcookie.sh
 script:
-  - make dev
+  - if [ "$TRAVIS_OS_NAME" == "linux" ]; then make dev; fi
+  - if [ "$TRAVIS_OS_NAME" == "power" ]; then make default; fi
